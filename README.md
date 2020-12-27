@@ -9,7 +9,7 @@
 - Redirector
 - Secretary
 - Strategy
-- Secretary Center
+- Secretariat
 - Monitor
 - Tecretary
 - Texchange
@@ -46,7 +46,7 @@
 
 秘书程序有多个，每种语言一个，以策略模式调用策略，向策略提供交互接口。一个秘书可能连接多个市场，这是为了支持套利策略。
 
-<!-- 秘书将记录交易数据并主动提供给秘书中心。秘书与秘书中心使用 websocket 持久连接。 -->
+秘书将交易状态信息主动提供给秘书处，秘书与秘书处使用 http 持久连接。
 
 ### Strategy
 
@@ -62,20 +62,20 @@ Tecretary 调用 Techange 作为回测服务器。
 
 Texchange 是一个回测服务器，同时担任 Public Agent 和 Private Agent，是 Tecretary 的组件。
 
-### Secretary Center
+### Secretariat
 
-秘书中心是一个单例 daemon，整合各个秘书的交易信息持久化并被动提供给监控台。
+秘书处是一个单例 daemon，整合各个秘书的交易信息持久化并被动提供给监控台。
 
-秘书中心负责管理秘书们的运行状态，虽然秘书和策略可以是各种语言写的。
+秘书处负责管理秘书们的运行状态，虽然秘书和策略可以是各种语言写的。
 
-秘书开始运行时向秘书中心注册自己。
+秘书开始运行时向秘书处注册自己。
 
 ### Monitor
 
-监控台是一个 webapp，主动从秘书中心获取
+监控台是一个 webapp，主动从秘书处获取
 
 - 交易信息
 - 账户信息
 - 历史信息
 
-还可以控制通过秘书中心秘书运行。
+还可以通过秘书处控制秘书运行。
