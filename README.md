@@ -66,8 +66,6 @@ Texchange 是一个回测服务器，同时担任 Public Agent 和 Private Agent
 
 秘书处是一个单例 daemon，整合各个秘书的交易信息持久化并被动提供给监控台。
 
-秘书处负责管理秘书们的运行状态，虽然秘书和策略可以是各种语言写的。
-
 秘书开始运行时向秘书处注册自己。
 
 ### Monitor
@@ -77,5 +75,3 @@ Texchange 是一个回测服务器，同时担任 Public Agent 和 Private Agent
 - 交易信息
 - 账户信息
 - 历史信息
-
-还可以通过秘书处控制秘书运行。
