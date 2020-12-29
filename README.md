@@ -6,13 +6,14 @@
 
 - Public Agent
 - Private Agent
-- Redirector
+- [Redirector](https://github.com/bithub-framework/redirector)
 - Secretary
+    - [JavaScript](https://github.com/bithub-framework/secretary-js)
 - Strategy
-- Secretariat
+- [Secretariat](https://github.com/bithub-framework/secretariat)
 - Monitor
-- Tecretary
-- Texchange
+- [Tecretary](https://github.com/bithub-framework/tecretary)
+- [Texchange](https://github.com/bithub-framework/texchange)
 
 ![architecture](./arch.png)
 
