@@ -4,12 +4,12 @@
 
 整个项目分为以下模块
 
-- Public Agent
-- Private Agent
+- Public Agents
+- Private Agents
 - [Redirector](https://github.com/bithub-framework/redirector)
-- Secretary
+- Secretaries
     - [JavaScript](https://github.com/bithub-framework/secretary-js)
-- Strategy
+- Strategies
 - [Secretariat](https://github.com/bithub-framework/secretariat)
 - [Monitor](https://github.com/bithub-framework/monitor)
 - [Tecretary](https://github.com/bithub-framework/tecretary)
