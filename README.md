@@ -11,9 +11,10 @@
     - [JavaScript](https://github.com/bithub-framework/secretary-js)
 - Strategies
 - [Secretariat](https://github.com/bithub-framework/secretariat)
-- [Monitor](https://github.com/bithub-framework/monitor)
 - [Tecretary](https://github.com/bithub-framework/tecretary)
 - [Texchange](https://github.com/bithub-framework/texchange)
+- Monitor
+- Night Vision
 
 ![architecture](./arch.png)
 
@@ -68,4 +69,8 @@ Texchange 是一个模拟交易所，同时担任 Public Agent 和 Private Agent
 
 ### Monitor
 
-监控台是一个 webapp，用于可视化。
+监控台是一个 webapp，用于可视化实时运行状态。
+
+### Night Vision
+
+夜视仪是一个 webapp，用于可视化本地数据。
