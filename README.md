@@ -1,76 +1,75 @@
-# BitHub
+# bithub
 
 ## 架构
 
-整个项目分为以下模块
+bithub 分为以下组件
 
-- Public Agents
-- Private Agents
-- [Redirector](https://github.com/bithub-framework/redirector)
-- Secretaries
-    - [JavaScript](https://github.com/bithub-framework/secretary-js)
-- Strategies
-- [Secretariat](https://github.com/bithub-framework/secretariat)
-- [Tecretary](https://github.com/bithub-framework/tecretary)
-- [Texchange](https://github.com/bithub-framework/texchange)
-- Monitor
-- Night Vision
+- agent
+    - publagent
+    - privagent
+- [secretary](https://github.com/bithub-framework/secretary)
+- strategy
+- [secretariat](https://github.com/bithub-framework/secretariat)
+- [tecretary](https://github.com/bithub-framework/tecretary)
+- [texchange](https://github.com/bithub-framework/texchange)
+- dashboard
 
 ![architecture](./arch.png)
 
-### Public Agents
+### publagent
 
-每个交易所有一个 Public Agent 程序，每个程序运行一个实例。用于获取该交易所中多个市场的行情数据，并转换为统一 websocket 接口。
+每个交易所都有一个 publagent 程序，每个程序运行一个实例。用于获取该交易所中多个市场的行情数据，并转换为统一接口。
 
-### Private agents
+### privagent
 
-每个交易所有一个 Private Agent 程序，每一个账户运行一个实例。用于发送交易指令，并提供统一接口。
+每个交易所有一个 privagent 程序，每一个账户运行一个实例。用于发送交易指令，并提供统一接口。
 
-之所以把 Private Agents 设计为 daemon 而不是 bindings，是为了让 Private Agents 可以跨语言开发。
+之所以把 privagent 设计为 daemon 而不是 bindings，是为了让 privagent 可以跨语言开发。
 
-### Redirector
+### secretary
 
-每个需要被别人连接的实例，在启动时将自己提供的服务的名称和地址注册到 Redirector 用于别人连接时重定向。这样就不需要给每个被连接实例一个固定端口。
+秘书程序以策略模式调用策略，向策略提供交互接口。
 
-之所以不用中介程序转发数据是因为 Private Agent 连接中介时中介是 server，从 server 向作为 client 的 Private Agent 发请求很麻烦
+一个秘书可能连接多个市场。
 
-- http 不能从 server 向 client 发请求
-- websocket 不支持 req/res pattern
-- 中心化动态注册的 websocket 子协议 WAMP 协议太小众。
-- socket.io 的 res 是以 callback 的形式而不是专用的 req/res pattern，如果不 res 不会自动报错
-- dubbo/grpc/hprose/thrift/tars 等主流 rpc 框架似乎均不支持 server 向 client 发请求
-- 支持 server 向 client 发请求的 rpc 框架 dnode 不能跨语言
+秘书将交易状态信息主动提供给秘书处接。
 
-### Secretary
-
-秘书程序有多个，每种语言一个，以策略模式调用策略，向策略提供交互接口。一个秘书可能连接多个市场，这是为了支持套利策略。
-
-秘书将交易状态信息主动提供给秘书处，秘书与秘书处使用 http 持久连接。
-
-### Strategy
+### strategy
 
 每一个策略都是一个不能独立运行的程序模块，以策略模式被秘书调用。
 
-### Tecretary
+### tecretary
 
-Tecretary 是回测专用秘书，每种语言一个，对策略暴露的接口与 secretary 完全相同。
+tecretary 是回测专用秘书，对策略暴露的接口与 secretary 完全相同。
 
-Tecretary 调用 Techange 作为模拟交易所。
+tecretary 调用多个 texchange 作为模拟交易所。
 
-### Texchange
+### texchange
 
-Texchange 是一个模拟交易所，同时担任 Public Agent 和 Private Agent，是 Tecretary 的组件。
+texchange 是一个模拟交易所，是 tecretary 的组件。
 
-### Secretariat
+### secretariat
 
-秘书处是一个单例 daemon，整合各个秘书的交易信息持久化并被动提供给监控台。
+秘书处是一个单例 daemon，整合各个秘书的交易信息持久化并被动提供给仪表盘。
 
 秘书开始运行时向秘书处注册自己。
 
-### Monitor
+### dashboard
 
-监控台是一个 webapp，用于可视化实时运行状态。
+仪表盘是一个 webapp，用于可视化实时运行状态和本地数据。
 
-### Night Vision
+## secretary 连接到 agent
 
-夜视仪是一个 webapp，用于可视化本地数据。
+### 为什么不用消息队列代理 publagent
+
+与「一对多发布订阅模型」相比，「多对多发布订阅模型」在语义上最大的区别在于，订阅者只关心事件，不关心发布者是谁，更不关心发布者的状态。
+
+秘书作为订阅者很关心 publagent 的状态，其数学模型属于「一对多发布订阅模型」，只有直连发布者才符合其语义。而消息队列是对「多对多发布订阅模型」的实现，用消息队列会使语义与实现不一致，临床表现为如果 publagent 挂了秘书不知道。
+
+### 服务发现
+
+为了使 publagent 和 privagent 可插拔，本来应该整个 rpc 框架来实现 agent 的服务发现，但感觉杀鸡用牛刀。反正我也没打算让 agent 跨主机，所以就找个目录统一存放 socket 文件作为服务注册。
+
+### 为什么秘书不用 websocket 连接 agent
+
+websocket 的语义仅仅是「双向数据流」，要想实现「发布订阅模型」还得自己在 websocket 之上再实现一层。虽然也不是不行，但感觉像宰牛用剪刀。
