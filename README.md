@@ -78,4 +78,4 @@ websocket 的原生语义仅仅是「双向数据流」，要想实现「发布�
 
 用 sse 会把 json 抽象成 text，到目标机器上在具象成 string，此时换行符可能被转换了。于是 json 就变成了另一个 json，只是他们 parse 出来恰好相同。
 
-解决方法是在 sse 之上用 base64 再写一个字符串传输层，但是这比 websocket 更麻烦。
+解决方法是在 sse 之上用 base64 再写一个二进制传输层，再在二进制层之上用 utf-8 写一个字符串传输层，但是这比 websocket 更麻烦。
