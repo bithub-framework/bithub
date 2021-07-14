@@ -76,6 +76,6 @@ websocket 的原生语义仅仅是「双向数据流」，要想实现「发布�
 
 但 sse 传输的不是 string，而是 text，或者说是设备显示人类可读文本的动作序列，同样的 text 在不同传输协议存储协议中用不同的 string 表示，比如换行符就可能不同。json 明确规定了 whitespace 的字符，因此 json 的语义是「js 值的字符串表示法」而不是「js 值的文本表示法」。
 
-用 sse 会把 json 抽象成 text，到目标机器上在具象成 string，此时换行符可能被转换了。于是 json 就变成了另一个 json，只是他们 parse 出来恰好相同。
+用 sse 会把 json 抽象成 text，到目标机器上在具象成 string，此时换行符可能被转换了，leading and trailing spaces 可能被删掉了。于是 json 就变成了另一个 json，只是他们 parse 出来恰好相同。
 
 解决方法是在 sse 之上用 base64 再写一个二进制传输层，再在二进制层之上用 utf-8 写一个字符串传输层，但是这比 websocket 更麻烦。
